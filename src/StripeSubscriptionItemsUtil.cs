@@ -21,9 +21,10 @@ public sealed class StripeSubscriptionItemsUtil : IStripeSubscriptionItemsUtil
     {
         _logger = logger;
 
-        _service = new AsyncSingleton<SubscriptionItemService>(async (cancellationToken, _) =>
+        _service = new AsyncSingleton<SubscriptionItemService>(async cancellationToken =>
         {
-            StripeClient client = await stripeUtil.Get(cancellationToken).NoSync();
+            StripeClient client = await stripeUtil.Get(cancellationToken)
+                                                  .NoSync();
             return new SubscriptionItemService(client);
         });
     }
@@ -31,10 +32,12 @@ public sealed class StripeSubscriptionItemsUtil : IStripeSubscriptionItemsUtil
     public async ValueTask<SubscriptionItem> Create(SubscriptionItemCreateOptions options, RequestOptions? requestOptions = null,
         CancellationToken cancellationToken = default)
     {
-        SubscriptionItemService svc = await _service.Get(cancellationToken).NoSync();
+        SubscriptionItemService svc = await _service.Get(cancellationToken)
+                                                    .NoSync();
         try
         {
-            return await svc.CreateAsync(options, requestOptions, cancellationToken).NoSync();
+            return await svc.CreateAsync(options, requestOptions, cancellationToken)
+                            .NoSync();
         }
         catch (Exception ex)
         {
@@ -46,10 +49,12 @@ public sealed class StripeSubscriptionItemsUtil : IStripeSubscriptionItemsUtil
     public async ValueTask<SubscriptionItem> Get(string subscriptionItemId, SubscriptionItemGetOptions getOptions, RequestOptions? requestOptions = null,
         CancellationToken cancellationToken = default)
     {
-        SubscriptionItemService svc = await _service.Get(cancellationToken).NoSync();
+        SubscriptionItemService svc = await _service.Get(cancellationToken)
+                                                    .NoSync();
         try
         {
-            return await svc.GetAsync(subscriptionItemId, getOptions, requestOptions, cancellationToken).NoSync();
+            return await svc.GetAsync(subscriptionItemId, getOptions, requestOptions, cancellationToken)
+                            .NoSync();
         }
         catch (Exception ex)
         {
@@ -61,10 +66,12 @@ public sealed class StripeSubscriptionItemsUtil : IStripeSubscriptionItemsUtil
     public async ValueTask<SubscriptionItem> Update(string subscriptionItemId, SubscriptionItemUpdateOptions options, RequestOptions? requestOptions = null,
         CancellationToken cancellationToken = default)
     {
-        SubscriptionItemService svc = await _service.Get(cancellationToken).NoSync();
+        SubscriptionItemService svc = await _service.Get(cancellationToken)
+                                                    .NoSync();
         try
         {
-            return await svc.UpdateAsync(subscriptionItemId, options, requestOptions, cancellationToken).NoSync();
+            return await svc.UpdateAsync(subscriptionItemId, options, requestOptions, cancellationToken)
+                            .NoSync();
         }
         catch (Exception ex)
         {
@@ -76,10 +83,12 @@ public sealed class StripeSubscriptionItemsUtil : IStripeSubscriptionItemsUtil
     public async ValueTask<SubscriptionItem> Delete(string subscriptionItemId, SubscriptionItemDeleteOptions deleteOptions,
         RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)
     {
-        SubscriptionItemService svc = await _service.Get(cancellationToken).NoSync();
+        SubscriptionItemService svc = await _service.Get(cancellationToken)
+                                                    .NoSync();
         try
         {
-            return await svc.DeleteAsync(subscriptionItemId, deleteOptions, requestOptions, cancellationToken).NoSync();
+            return await svc.DeleteAsync(subscriptionItemId, deleteOptions, requestOptions, cancellationToken)
+                            .NoSync();
         }
         catch (Exception ex)
         {
@@ -91,10 +100,12 @@ public sealed class StripeSubscriptionItemsUtil : IStripeSubscriptionItemsUtil
     public async ValueTask<StripeList<SubscriptionItem>> List(SubscriptionItemListOptions options, RequestOptions? requestOptions = null,
         CancellationToken cancellationToken = default)
     {
-        SubscriptionItemService svc = await _service.Get(cancellationToken).NoSync();
+        SubscriptionItemService svc = await _service.Get(cancellationToken)
+                                                    .NoSync();
         try
         {
-            return await svc.ListAsync(options, requestOptions, cancellationToken).NoSync();
+            return await svc.ListAsync(options, requestOptions, cancellationToken)
+                            .NoSync();
         }
         catch (Exception ex)
         {
