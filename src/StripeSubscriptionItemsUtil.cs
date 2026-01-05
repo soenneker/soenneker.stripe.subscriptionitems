@@ -15,18 +15,22 @@ namespace Soenneker.Stripe.SubscriptionItems;
 public sealed class StripeSubscriptionItemsUtil : IStripeSubscriptionItemsUtil
 {
     private readonly ILogger<StripeSubscriptionItemsUtil> _logger;
+    private readonly IStripeClientUtil _stripeUtil;
     private readonly AsyncSingleton<SubscriptionItemService> _service;
 
     public StripeSubscriptionItemsUtil(ILogger<StripeSubscriptionItemsUtil> logger, IStripeClientUtil stripeUtil)
     {
         _logger = logger;
+        _stripeUtil = stripeUtil;
 
-        _service = new AsyncSingleton<SubscriptionItemService>(async cancellationToken =>
-        {
-            StripeClient client = await stripeUtil.Get(cancellationToken)
-                                                  .NoSync();
-            return new SubscriptionItemService(client);
-        });
+        _service = new AsyncSingleton<SubscriptionItemService>(CreateService);
+    }
+
+    private async ValueTask<SubscriptionItemService> CreateService(CancellationToken cancellationToken)
+    {
+        StripeClient client = await _stripeUtil.Get(cancellationToken)
+                                               .NoSync();
+        return new SubscriptionItemService(client);
     }
 
     public async ValueTask<SubscriptionItem> Create(SubscriptionItemCreateOptions options, RequestOptions? requestOptions = null,
