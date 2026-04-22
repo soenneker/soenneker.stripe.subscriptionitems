@@ -1,20 +1,19 @@
-﻿using Soenneker.Stripe.SubscriptionItems.Abstract;
-using Soenneker.Tests.FixturedUnit;
-using Xunit;
+using Soenneker.Stripe.SubscriptionItems.Abstract;
+using Soenneker.Tests.HostedUnit;
 
 namespace Soenneker.Stripe.SubscriptionItems.Tests;
 
-[Collection("Collection")]
-public sealed class StripeSubscriptionItemsUtilTests : FixturedUnitTest
+[ClassDataSource<Host>(Shared = SharedType.PerTestSession)]
+public sealed class StripeSubscriptionItemsUtilTests : HostedUnitTest
 {
     private readonly IStripeSubscriptionItemsUtil _util;
 
-    public StripeSubscriptionItemsUtilTests(Fixture fixture, ITestOutputHelper output) : base(fixture, output)
+    public StripeSubscriptionItemsUtilTests(Host host) : base(host)
     {
         _util = Resolve<IStripeSubscriptionItemsUtil>(true);
     }
 
-    [Fact]
+    [Test]
     public void Default()
     {
 
