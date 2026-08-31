@@ -6,10 +6,20 @@ using Stripe;
 namespace Soenneker.Stripe.SubscriptionItems.Abstract;
 
 /// <summary>
-/// Defines utility methods for managing Stripe subscription items.
+/// Creates and manages the prices and quantities attached to Stripe subscriptions.
 /// </summary>
 public interface IStripeSubscriptionItemsUtil : IDisposable, IAsyncDisposable
 {
+    /// <summary>
+    /// Releases the lazily initialized subscription-item service owned by this utility.
+    /// </summary>
+    new void Dispose();
+
+    /// <summary>
+    /// Asynchronously releases the lazily initialized subscription-item service owned by this utility.
+    /// </summary>
+    new ValueTask DisposeAsync();
+
     /// <summary>
     /// Creates a new subscription item on a subscription.
     /// </summary>
@@ -59,7 +69,7 @@ public interface IStripeSubscriptionItemsUtil : IDisposable, IAsyncDisposable
     /// <param name="options">The list options.</param>
     /// <param name="requestOptions">Optional Stripe request options.</param>
     /// <param name="cancellationToken">A cancellation token.</param>
-    /// <returns>A <see cref="StripeList{SubscriptionItem}"/> containing the subscription items.</returns>
+    /// <returns>One Stripe page containing the matching subscription items.</returns>
     ValueTask<StripeList<SubscriptionItem>> List(SubscriptionItemListOptions options, RequestOptions? requestOptions = null,
         CancellationToken cancellationToken = default);
 }

@@ -6,7 +6,7 @@ using Soenneker.Stripe.SubscriptionItems.Abstract;
 namespace Soenneker.Stripe.SubscriptionItems.Registrars;
 
 /// <summary>
-/// A .NET typesafe implementation of Stripe's Subscription Items API
+/// Registers Stripe subscription-item operations.
 /// </summary>
 public static class StripeSubscriptionItemsUtilRegistrar
 {
