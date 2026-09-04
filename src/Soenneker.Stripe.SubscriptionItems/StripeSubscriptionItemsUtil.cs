@@ -11,6 +11,7 @@ using Stripe;
 
 namespace Soenneker.Stripe.SubscriptionItems;
 
+/// <inheritdoc cref="IStripeSubscriptionItemsUtil" />
 public sealed class StripeSubscriptionItemsUtil : IStripeSubscriptionItemsUtil
 {
     private readonly ILogger<StripeSubscriptionItemsUtil> _logger;
