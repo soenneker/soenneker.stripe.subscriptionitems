@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Stripe;
+using Soenneker.Stripe.OpenApiClient.Models;
+using Soenneker.Stripe.Client;
 
 namespace Soenneker.Stripe.SubscriptionItems.Abstract;
 
@@ -27,7 +28,7 @@ public interface IStripeSubscriptionItemsUtil : IDisposable, IAsyncDisposable
     /// <param name="requestOptions">Optional Stripe request options.</param>
     /// <param name="cancellationToken">A cancellation token.</param>
     /// <returns>The created <see cref="SubscriptionItem"/>.</returns>
-    ValueTask<SubscriptionItem> Create(SubscriptionItemCreateOptions options, RequestOptions? requestOptions = null,
+    ValueTask<SubscriptionItem> Create(PostSubscriptionItemsXWwwFormUrlencodedRequest options, StripeRequestOptions? requestOptions = null,
         CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -38,7 +39,7 @@ public interface IStripeSubscriptionItemsUtil : IDisposable, IAsyncDisposable
     /// <param name="requestOptions">Optional Stripe request options.</param>
     /// <param name="cancellationToken">A cancellation token.</param>
     /// <returns>The retrieved <see cref="SubscriptionItem"/>.</returns>
-    ValueTask<SubscriptionItem> Get(string subscriptionItemId, SubscriptionItemGetOptions getOptions, RequestOptions? requestOptions = null,
+    ValueTask<SubscriptionItem> Get(string subscriptionItemId, Soenneker.Stripe.OpenApiClient.V1.Subscription_items.Item.WithItemItemRequestBuilder.WithItemItemRequestBuilderGetQueryParameters getOptions, StripeRequestOptions? requestOptions = null,
         CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -49,7 +50,7 @@ public interface IStripeSubscriptionItemsUtil : IDisposable, IAsyncDisposable
     /// <param name="requestOptions">Optional Stripe request options.</param>
     /// <param name="cancellationToken">A cancellation token.</param>
     /// <returns>The updated <see cref="SubscriptionItem"/>.</returns>
-    ValueTask<SubscriptionItem> Update(string subscriptionItemId, SubscriptionItemUpdateOptions options, RequestOptions? requestOptions = null,
+    ValueTask<SubscriptionItem> Update(string subscriptionItemId, PostSubscriptionItemsItemXWwwFormUrlencodedRequest options, StripeRequestOptions? requestOptions = null,
         CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -60,7 +61,7 @@ public interface IStripeSubscriptionItemsUtil : IDisposable, IAsyncDisposable
     /// <param name="requestOptions">Optional Stripe request options.</param>
     /// <param name="cancellationToken">A cancellation token.</param>
     /// <returns>The deleted <see cref="SubscriptionItem"/>.</returns>
-    ValueTask<SubscriptionItem> Delete(string subscriptionItemId, SubscriptionItemDeleteOptions deleteOptions, RequestOptions? requestOptions = null,
+    ValueTask<DeletedSubscriptionItem> Delete(string subscriptionItemId, DeleteSubscriptionItemsItemXWwwFormUrlencodedRequest deleteOptions, StripeRequestOptions? requestOptions = null,
         CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -70,6 +71,6 @@ public interface IStripeSubscriptionItemsUtil : IDisposable, IAsyncDisposable
     /// <param name="requestOptions">Optional Stripe request options.</param>
     /// <param name="cancellationToken">A cancellation token.</param>
     /// <returns>One Stripe page containing the matching subscription items.</returns>
-    ValueTask<StripeList<SubscriptionItem>> List(SubscriptionItemListOptions options, RequestOptions? requestOptions = null,
+    ValueTask<SubscriptionsItemsSubscriptionItemList> List(Soenneker.Stripe.OpenApiClient.V1.Subscription_items.Subscription_itemsRequestBuilder.Subscription_itemsRequestBuilderGetQueryParameters options, StripeRequestOptions? requestOptions = null,
         CancellationToken cancellationToken = default);
 }

@@ -1,124 +1,52 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using Soenneker.Extensions.Task;
-using Soenneker.Extensions.ValueTask;
+using Soenneker.Stripe.Client;
 using Soenneker.Stripe.Client.Abstract;
+using Soenneker.Stripe.OpenApiClient.Models;
 using Soenneker.Stripe.SubscriptionItems.Abstract;
-using Soenneker.Utils.AsyncSingleton;
-using Stripe;
 
 namespace Soenneker.Stripe.SubscriptionItems;
 
-/// <inheritdoc cref="IStripeSubscriptionItemsUtil" />
-public sealed class StripeSubscriptionItemsUtil : IStripeSubscriptionItemsUtil
+public sealed class StripeSubscriptionItemsUtil(IStripeClientUtil client) : IStripeSubscriptionItemsUtil
 {
-    private readonly ILogger<StripeSubscriptionItemsUtil> _logger;
-    private readonly IStripeClientUtil _stripeUtil;
-    private readonly AsyncSingleton<SubscriptionItemService> _service;
-
-    public StripeSubscriptionItemsUtil(ILogger<StripeSubscriptionItemsUtil> logger, IStripeClientUtil stripeUtil)
+    public async ValueTask<SubscriptionItem> Create(PostSubscriptionItemsXWwwFormUrlencodedRequest options, StripeRequestOptions? requestOptions = null, CancellationToken cancellationToken = default)
     {
-        _logger = logger;
-        _stripeUtil = stripeUtil;
-
-        _service = new AsyncSingleton<SubscriptionItemService>(CreateService);
+        var api = await client.Get(cancellationToken);
+        return await api.V1.Subscription_items.PostAsync(options, c => requestOptions?.Apply(c.Headers), cancellationToken)
+            ?? throw new InvalidOperationException("Stripe returned an empty response.");
     }
 
-    private async ValueTask<SubscriptionItemService> CreateService(CancellationToken cancellationToken)
+    public async ValueTask<SubscriptionItem> Get(string id, Soenneker.Stripe.OpenApiClient.V1.Subscription_items.Item.WithItemItemRequestBuilder.WithItemItemRequestBuilderGetQueryParameters options, StripeRequestOptions? requestOptions = null, CancellationToken cancellationToken = default)
     {
-        StripeClient client = await _stripeUtil.Get(cancellationToken)
-                                               .NoSync();
-        return new SubscriptionItemService(client);
+        var api = await client.Get(cancellationToken);
+        return await api.V1.Subscription_items[id].GetAsync(new(), c => { c.QueryParameters = options; requestOptions?.Apply(c.Headers); }, cancellationToken)
+            ?? throw new InvalidOperationException("Stripe returned an empty response.");
     }
 
-    public async ValueTask<SubscriptionItem> Create(SubscriptionItemCreateOptions options, RequestOptions? requestOptions = null,
-        CancellationToken cancellationToken = default)
+    public async ValueTask<SubscriptionItem> Update(string id, PostSubscriptionItemsItemXWwwFormUrlencodedRequest options, StripeRequestOptions? requestOptions = null, CancellationToken cancellationToken = default)
     {
-        SubscriptionItemService svc = await _service.Get(cancellationToken)
-                                                    .NoSync();
-        try
-        {
-            return await svc.CreateAsync(options, requestOptions, cancellationToken)
-                            .NoSync();
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error creating subscription item {@Options}", options);
-            throw;
-        }
+        var api = await client.Get(cancellationToken);
+        return await api.V1.Subscription_items[id].PostAsync(options, c => requestOptions?.Apply(c.Headers), cancellationToken)
+            ?? throw new InvalidOperationException("Stripe returned an empty response.");
     }
 
-    public async ValueTask<SubscriptionItem> Get(string subscriptionItemId, SubscriptionItemGetOptions getOptions, RequestOptions? requestOptions = null,
-        CancellationToken cancellationToken = default)
+    public async ValueTask<DeletedSubscriptionItem> Delete(string id, DeleteSubscriptionItemsItemXWwwFormUrlencodedRequest options, StripeRequestOptions? requestOptions = null, CancellationToken cancellationToken = default)
     {
-        SubscriptionItemService svc = await _service.Get(cancellationToken)
-                                                    .NoSync();
-        try
-        {
-            return await svc.GetAsync(subscriptionItemId, getOptions, requestOptions, cancellationToken)
-                            .NoSync();
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error retrieving subscription item {SubscriptionItemId}", subscriptionItemId);
-            throw;
-        }
+        var api = await client.Get(cancellationToken);
+        return await api.V1.Subscription_items[id].DeleteAsync(options, c => requestOptions?.Apply(c.Headers), cancellationToken)
+            ?? throw new InvalidOperationException("Stripe returned an empty response.");
     }
 
-    public async ValueTask<SubscriptionItem> Update(string subscriptionItemId, SubscriptionItemUpdateOptions options, RequestOptions? requestOptions = null,
-        CancellationToken cancellationToken = default)
+    public async ValueTask<SubscriptionsItemsSubscriptionItemList> List(Soenneker.Stripe.OpenApiClient.V1.Subscription_items.Subscription_itemsRequestBuilder.Subscription_itemsRequestBuilderGetQueryParameters options, StripeRequestOptions? requestOptions = null, CancellationToken cancellationToken = default)
     {
-        SubscriptionItemService svc = await _service.Get(cancellationToken)
-                                                    .NoSync();
-        try
-        {
-            return await svc.UpdateAsync(subscriptionItemId, options, requestOptions, cancellationToken)
-                            .NoSync();
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error updating subscription item {SubscriptionItemId} {@Options}", subscriptionItemId, options);
-            throw;
-        }
+        var api = await client.Get(cancellationToken);
+        return await api.V1.Subscription_items.GetAsync(new(), c => { c.QueryParameters = options; requestOptions?.Apply(c.Headers); }, cancellationToken)
+            ?? throw new InvalidOperationException("Stripe returned an empty response.");
     }
 
-    public async ValueTask<SubscriptionItem> Delete(string subscriptionItemId, SubscriptionItemDeleteOptions deleteOptions,
-        RequestOptions? requestOptions = null, CancellationToken cancellationToken = default)
-    {
-        SubscriptionItemService svc = await _service.Get(cancellationToken)
-                                                    .NoSync();
-        try
-        {
-            return await svc.DeleteAsync(subscriptionItemId, deleteOptions, requestOptions, cancellationToken)
-                            .NoSync();
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error deleting subscription item {SubscriptionItemId}", subscriptionItemId);
-            throw;
-        }
-    }
-
-    public async ValueTask<StripeList<SubscriptionItem>> List(SubscriptionItemListOptions options, RequestOptions? requestOptions = null,
-        CancellationToken cancellationToken = default)
-    {
-        SubscriptionItemService svc = await _service.Get(cancellationToken)
-                                                    .NoSync();
-        try
-        {
-            return await svc.ListAsync(options, requestOptions, cancellationToken)
-                            .NoSync();
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error listing subscription items {@Options}", options);
-            throw;
-        }
-    }
-
-    public void Dispose() => _service.Dispose();
-
-    public ValueTask DisposeAsync() => _service.DisposeAsync();
+    public void Dispose() { }
+    public ValueTask DisposeAsync() => ValueTask.CompletedTask;
 }
