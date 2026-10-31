@@ -22,7 +22,7 @@ public sealed class StripeSubscriptionItemsUtil(IStripeClientUtil client) : IStr
     public async ValueTask<SubscriptionItem> Get(string id, Soenneker.Stripe.OpenApiClient.V1.Subscription_items.Item.WithItemItemRequestBuilder.WithItemItemRequestBuilderGetQueryParameters options, StripeRequestOptions? requestOptions = null, CancellationToken cancellationToken = default)
     {
         var api = await client.Get(cancellationToken);
-        return await api.V1.Subscription_items[id].GetAsync(new(), c => { c.QueryParameters = options; requestOptions?.Apply(c.Headers); }, cancellationToken)
+        return await api.V1.Subscription_items[id].GetAsync(c => { c.QueryParameters = options; requestOptions?.Apply(c.Headers); }, cancellationToken)
             ?? throw new InvalidOperationException("Stripe returned an empty response.");
     }
 
@@ -43,7 +43,7 @@ public sealed class StripeSubscriptionItemsUtil(IStripeClientUtil client) : IStr
     public async ValueTask<SubscriptionsItemsSubscriptionItemList> List(Soenneker.Stripe.OpenApiClient.V1.Subscription_items.Subscription_itemsRequestBuilder.Subscription_itemsRequestBuilderGetQueryParameters options, StripeRequestOptions? requestOptions = null, CancellationToken cancellationToken = default)
     {
         var api = await client.Get(cancellationToken);
-        return await api.V1.Subscription_items.GetAsync(new(), c => { c.QueryParameters = options; requestOptions?.Apply(c.Headers); }, cancellationToken)
+        return await api.V1.Subscription_items.GetAsync(c => { c.QueryParameters = options; requestOptions?.Apply(c.Headers); }, cancellationToken)
             ?? throw new InvalidOperationException("Stripe returned an empty response.");
     }
 
